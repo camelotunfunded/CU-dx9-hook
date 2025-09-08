@@ -6,13 +6,12 @@
 #include <d3d9.h>
 #include <string>
 #include <cstdint>
-#include <sstream> // Inclure pour std::stringstream
+#include <sstream> // Include for std::stringstream
 
-// Interrupteur pour l'export JPG
+// Switch for JPG export
 extern bool g_bEnableJpgExport;
-// Interrupteur pour le log des draw calls
+// Switch for draw call logging
 extern bool g_bEnableDrawCallLogging;
-
 
 extern std::set<IDirect3DBaseTexture9*> g_loggedTextures;
 
@@ -34,10 +33,10 @@ extern std::stringstream logPixelShader;
 extern std::stringstream g_frameLog;
 extern std::stringstream g_textureLog;
 
-// Fonction pour vider tous les tampons dans les fichiers
+// Function to flush all buffers to files
 void FlushLogs();
 
-// --- Nouvelles variables globales ---
+// --- New global variables ---
 extern std::set<uint32_t> g_detectedVegetationHashes;
 extern std::unordered_map<IDirect3DBaseTexture9*, uint32_t> g_textureHashes;
 extern uint32_t g_lastTextureHash;

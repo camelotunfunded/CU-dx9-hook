@@ -163,4 +163,8 @@ extern "C" __declspec(naked) void __stdcall __ProxyFunc13(){
 	__asm{
 		jmp origProc[13*4];
 	}
+    // C'EST LE BON ENDROIT POUR INITIALISER LES LOGS
+    // THIS IS THE RIGHT PLACE TO INITIALIZE THE LOGS
+    // C'est appelé juste après le chargement de la DLL, mais dans un contexte sûr.
+    // This is called just after the DLL is loaded, but in a safe context.
 }
