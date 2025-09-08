@@ -629,6 +629,57 @@ HRESULT IDirect3DDevice9Proxy::DrawPrimitive(D3DPRIMITIVETYPE PrimitiveType, UIN
 }
 
 
+// =====================================================================================
+// [VEGETATION HOOK] - DAoC D3D9 Fixed Pipeline Override (végétation animée)
+//
+// [FR]
+// Ce hook intercepte les appels à DrawIndexedPrimitive pour les sprites de végétation
+// dans Dark Age of Camelot (client Direct3D9). Il est basé sur une analyse préalable
+// du pipeline graphique du jeu, qui révèle que la végétation est rendue via :
+//
+//   - Des quads alpha-blendés (billboards), avec de petits index buffers,
+//   - Des ressources identifiables par hash de texture (prévisible),
+//   - Un pipeline fixe (Fixed Function Pipeline), sans vertex/pixel shaders,
+//   - Des états parfois incorrects : textures non bindées, COLOROP désactivé.
+//
+// Le hook applique un effet (pixel shader) pour animer les sprites (e.g., vent),
+// tout en conservant le modèle d'origine.
+//
+// Points clés :
+//  - Le rendu végétation est identifié par g_lastTextureHash, ( voir commentaire dans Texturehash.cpp)
+//  - Une texture est rebindée si nécessaire,
+//  - Les TextureStageStates sont forcés (sinon les sprites apparaissent noirs),
+//  - Les matrices World/View/Projection sont passées à l'effet,
+//  - Le contexte Direct3D est sauvegardé et restauré via IDirect3DStateBlock9,
+//  - Le fallback vers DrawIndexedPrimitive normal est conservé si erreur.
+//
+// [EN]
+// This hook overrides vegetation sprite rendering in Dark Age of Camelot (D3D9 client).
+// Based on reverse-engineering the game's render path, we determined that vegetation is:
+//
+//   - Rendered as alpha-blended quads (billboards) using small index buffers,
+//   - Identified by predictable texture hashes,
+//   - Processed through the fixed-function pipeline (no shaders),
+//   - Occasionally broken: unbound textures, COLOROP = DISABLE, etc.
+//
+// This hook injects a pixel shader-based animation effect (e.g., wind motion),
+// while keeping the original geometry untouched.
+//
+// Key steps:
+//  - Detect vegetation drawcall via g_lastTextureHash,(see comment in Texturehash.cpp)
+//  - Bind the correct texture if needed,
+//  - Force texture stage states to prevent blank output,
+//  - Pass WVP matrices and animation time to the shader,
+//  - Capture & restore device state using IDirect3DStateBlock9,
+//  - Fallback to original DIP if effect or hash isn't valid.
+//
+// This is part of a larger effort to modernize DAoC’s rendering path incrementally.
+// =====================================================================================
+
+
+
+
+
 HRESULT IDirect3DDevice9Proxy::DrawIndexedPrimitive(
 	D3DPRIMITIVETYPE PrimitiveType,
 	INT BaseVertexIndex,
@@ -639,6 +690,9 @@ HRESULT IDirect3DDevice9Proxy::DrawIndexedPrimitive(
 {
 	drawCallCount++;
 
+	// See texturehash.cpp for details on hash-based vegetation detection.
+// (This is a temporary dev-stage solution; see notes there for future plan.)
+
 	bool isVegetation = (g_detectedVegetationHashes.find(g_lastTextureHash) != g_detectedVegetationHashes.end());
 
 	if (isVegetation && g_vegetationEffect)
@@ -646,38 +700,60 @@ HRESULT IDirect3DDevice9Proxy::DrawIndexedPrimitive(
 		HRESULT result = D3D_OK;
 		IDirect3DStateBlock9* pStateBlock = nullptr;
 
+
+
 		if (SUCCEEDED(origIDirect3DDevice9->CreateStateBlock(D3DSBT_ALL, &pStateBlock)))
 		{
 			pStateBlock->Capture();
 
 			// 1. Cherche la bonne texture végétation par hash
+			// 1. Look up the corresponding vegetation texture using its hashed ID
 			auto it = g_vegetationTexturesByHash.find(g_lastTextureHash);
 			IDirect3DTexture9* wantedTex = (it != g_vegetationTexturesByHash.end()) ? it->second : nullptr;
 
 			// 2. Récupère la texture courante bindée sur slot 0
+			// 2. Retrieve the currently bound texture from texture stage 0
 			IDirect3DBaseTexture9* currentTex = nullptr;
 			origIDirect3DDevice9->GetTexture(0, &currentTex);
 
 			// 3. Si c’est pas la bonne, on la bind explicitement
-			if (wantedTex && currentTex != wantedTex)
+			// 3. If the bound texture differs from the expected one, override it manually
+			if (wantedTex && currentTex != static_cast<IDirect3DBaseTexture9*>(wantedTex))
+
 				origIDirect3DDevice9->SetTexture(0, wantedTex);
 
 			// 4. Passe la texture (celle qui est bindée, donc wantedTex ou currentTex) à l’effet
+			// 4. Set the bound texture (either wantedTex or currentTex) as input for the shader
 			IDirect3DBaseTexture9* shaderTex = wantedTex ? wantedTex : currentTex;
+		
+
 			if (shaderTex)
 				g_vegetationEffect->SetTexture(g_baseTextureHandle, shaderTex);
 
 			// 5. Animation
+			// 5. Update animation time parameter (based on system clock)
 			float timeSeconds = static_cast<float>(GetTickCount64() % 100000) / 1000.0f;
 			g_vegetationEffect->SetFloat(g_timeHandle, timeSeconds);
 
 			// 6. Matrices
+			// 6. Compute and pass the World-View-Projection matrix to the shader
 			D3DXMATRIX world, view, proj, wvp;
 			origIDirect3DDevice9->GetTransform(D3DTS_WORLD, &world);
 			origIDirect3DDevice9->GetTransform(D3DTS_VIEW, &view);
 			origIDirect3DDevice9->GetTransform(D3DTS_PROJECTION, &proj);
 			wvp = world * view * proj;
 			g_vegetationEffect->SetMatrix("WorldViewProjection", &wvp);
+
+			// --- Forcer les TextureStageStates pour le slot 0 (Fixed Pipeline) ---
+			// --- Ensure fixed-function texture stage states are correctly set for modulation ---)
+			origIDirect3DDevice9->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
+			origIDirect3DDevice9->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
+			origIDirect3DDevice9->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_DIFFUSE);
+
+			origIDirect3DDevice9->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_MODULATE);
+			origIDirect3DDevice9->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
+			origIDirect3DDevice9->SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE);
+
 
 			g_vegetationEffect->Begin(nullptr, 0);
 			g_vegetationEffect->BeginPass(0);
@@ -697,12 +773,14 @@ HRESULT IDirect3DDevice9Proxy::DrawIndexedPrimitive(
 			return result;
 		}
 		// Fallback si erreur
+		// Fallback: perform draw call without effect if state block creation fails
 		return origIDirect3DDevice9->DrawIndexedPrimitive(
 			PrimitiveType, BaseVertexIndex, MinVertexIndex,
 			NumVertices, StartIndex, PrimCount);
 	}
 
 	// Cas normal
+	// Default case: forward the call without any vegetation-specific processing
 	return origIDirect3DDevice9->DrawIndexedPrimitive(
 		PrimitiveType, BaseVertexIndex, MinVertexIndex,
 		NumVertices, StartIndex, PrimCount);
