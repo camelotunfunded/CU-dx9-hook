@@ -1,5 +1,5 @@
 #include <sstream>
-#define NOMINMAX // pour éviter les conflits avec min/max définis dans Windows.h
+#define NOMINMAX // pour éviter les conflits avec min/max définis dans Windows.h // Prevent conflicts with min/max macros from Windows.h
 #include <cstdint>      // uint32_t, uint8_t
 #include <cstddef>      // size_t
 #include <algorithm>    // std::min
@@ -8,26 +8,31 @@
 #include "IDirect3DDevice9Proxy.h"
 #include <d3dx9.h>
 // Pour stocker chaque texture de végétation par hash (et gérer leur durée de vie COM)
+// Used to store each vegetation texture by hash (and manage COM lifetimes)
 #include <map>
 static std::map<uint32_t, IDirect3DTexture9*> g_vegetationTexturesByHash;
 
 
 //COMPTEUR POUR ENDSCENE
+// COUNTER FOR ENDSCENE
 static int endSceneCallCount = 0;
 
 
 // --- VARIABLES POUR LA DÉTECTION "IN-GAME" ---
+// --- VARIABLES FOR "IN-GAME" DETECTION ---
 static int drawCallCount = 0;
 static bool isInGame = false;
 
 // --- RESSOURCES POUR L'OISEAU ---
+// --- RESOURCES FOR THE BIRD SPRITE ---
+//BIRD STOPED for now
 LPDIRECT3DTEXTURE9 g_pBirdTexture = nullptr;
 IDirect3DVertexBuffer9* g_pBirdVB = nullptr;
 
 
 #include <filesystem>
 #include "ShaderManager.h"
-#include "KnownVegetation.h" // ou le bon header si les hashes sont stockés ailleurs
+#include "KnownVegetation.h" // ou le bon header si les hashes sont stockés ailleurs // Or the correct header if hashes are defined elsewhere
 
 #include <fstream>
 
@@ -40,6 +45,7 @@ struct SimpleVertex
 
 
 // temporaire pour l'export JPG des frames
+// Temporary JPG export utility for captured frames
 void ExportBackBufferAsJPG(IDirect3DDevice9* device, int frameIndex)
 {
 	IDirect3DSurface9* pBackBuffer = nullptr;
@@ -72,7 +78,7 @@ extern D3DXHANDLE g_timeHandle;
 
 //void InitBirdResources(IDirect3DDevice9* device)
 //{
-//	// On ne charge les ressources qu'une seule fois
+//	// On ne charge les ressources qu'une seule fois // Only load bird resources once
 //	if (g_pBirdTexture == nullptr)
 //	{
 //		// Charge la texture de l'oiseau depuis un fichier
@@ -129,8 +135,10 @@ IDirect3DDevice9Proxy::IDirect3DDevice9Proxy(IDirect3DDevice9* pOriginal) {
 	origIDirect3DDevice9 = pOriginal;
 	lastDevice = this;
 	// On initialise les ressources de l'oiseau ici.
+	// Initialize bird resources here.
+
 	// C'est le meilleur endroit car on est sûr que le device existe.
-	/*InitBirdResources(origIDirect3DDevice9);*/
+	 // Best place to do it, since we are sure the device exists.
 }
 
 IDirect3DDevice9Proxy::~IDirect3DDevice9Proxy(void) {
