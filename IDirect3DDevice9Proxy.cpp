@@ -660,12 +660,6 @@ HRESULT IDirect3DDevice9Proxy::SetTexture(DWORD Stage, IDirect3DBaseTexture9* pT
 
 
 
-
-
-
-
-
-
 HRESULT IDirect3DDevice9Proxy::GetTextureStageState(DWORD Stage,D3DTEXTURESTAGESTATETYPE Type,DWORD* pValue)
 {
 	return(origIDirect3DDevice9->GetTextureStageState(Stage,Type, pValue));
