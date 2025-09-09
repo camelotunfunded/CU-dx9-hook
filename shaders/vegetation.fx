@@ -1,57 +1,64 @@
-texture baseTexture;
+// === Vertex Format ===
+// position : float3 (POSITION)
+// color    : float4 (COLOR0)
+// texcoord : float2 (TEXCOORD0)
 
-sampler baseSampler = sampler_state {
-    Texture = <baseTexture>;
-    MinFilter = POINT;
-    MagFilter = POINT;
-    MipFilter = NONE;
-    AddressU = WRAP;
-    AddressV = WRAP;
+float4x4 WorldViewProjection;  // Matrice WVP
+float    Time;                 // Temps en secondes
+texture  BaseTexture;          // Texture d'herbe (bind via SetTexture)
+
+sampler2D BaseSampler = sampler_state
+{
+    Texture = <BaseTexture>;
+    MinFilter = LINEAR;
+    MagFilter = LINEAR;
+    MipFilter = LINEAR;
+    AddressU = Wrap;
+    AddressV = Wrap;
 };
 
-float4x4 WorldViewProjection;
-float time;
-
-struct VS_INPUT_252 {
-    float3 pos : POSITION;
-    float3 normal : NORMAL;     // ignorée mais nécessaire pour FVF 0x252
-    float2 tex : TEXCOORD0;
+struct VS_INPUT
+{
+    float3 position : POSITION;
+    float4 color    : COLOR0;
+    float2 texcoord : TEXCOORD0;
 };
 
-struct VS_OUTPUT {
-    float4 pos : POSITION;
-    float2 tex : TEXCOORD0;
+struct VS_OUTPUT
+{
+    float4 position : POSITION;
+    float2 texcoord : TEXCOORD0;
+    float4 color    : COLOR0;
 };
 
-VS_OUTPUT VS(VS_INPUT_252 input) {
+VS_OUTPUT VS(VS_INPUT input)
+{
     VS_OUTPUT output;
 
-    float4 localPos = float4(input.pos, 1.0);
-    localPos.x += sin(input.pos.x * 9.0 + time) * 0.9; // vent
+    // --- mouvement exagéré ---
+    float sway = sin(input.position.x * 0.5 + Time * 3.0) * 1.0   // onde forte en X
+               + cos(input.position.z * 0.7 + Time * 2.0) * 0.5;  // + un peu de chaos via Z
 
-    output.pos = mul(localPos, WorldViewProjection);
-    output.tex = input.tex;
+    float3 animatedPos = input.position;
+    animatedPos.y += sway; // grand déplacement vertical
+
+    output.position = mul(float4(animatedPos, 1.0), WorldViewProjection);
+    output.texcoord = input.texcoord;
+    output.color    = input.color;
 
     return output;
 }
 
-float4 PS(VS_OUTPUT input) : COLOR {
-    float4 texColor = tex2D(baseSampler, saturate(input.tex));
-
-    // Sécurité alpha minimale
-    if (texColor.a < 0.05)
-        texColor.a = 0.05;
-
-    // Remplace le vert de debug par une couleur par défaut si besoin
-    if (all(texColor.rgb == float3(0, 1, 0)))
-    texColor.rgb = float3(88.0/255.0, 134.0/255.0, 69.0/255.0);
-
-
-    return texColor;
+float4 PS(VS_OUTPUT input) : COLOR
+{
+    float4 texColor = tex2D(BaseSampler, input.texcoord);
+    return texColor * input.color; // applique la couleur diffuse
 }
 
-technique Wind{
-    pass P0 {
+technique Vegetation
+{
+    pass P0
+    {
         VertexShader = compile vs_2_0 VS();
         PixelShader  = compile ps_2_0 PS();
     }

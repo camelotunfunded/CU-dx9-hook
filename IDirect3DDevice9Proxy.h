@@ -2,6 +2,7 @@
 
 #include "defines.h"
 
+extern uint64_t g_drawCallID;
 
 
 class IDirect3DDevice9Proxy :

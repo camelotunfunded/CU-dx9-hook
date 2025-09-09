@@ -17,6 +17,11 @@ static std::map<uint32_t, IDirect3DTexture9*> g_vegetationTexturesByHash;
 // COUNTER FOR ENDSCENE
 static int endSceneCallCount = 0;
 
+//compteur pour DrawCall, pour croiser avec les logs séparés//counter for DrawCall, to cross-reference with separate logs
+uint64_t g_drawCallID = 0;
+
+
+
 
 // --- VARIABLES POUR LA DÉTECTION "IN-GAME" ---
 // --- VARIABLES FOR "IN-GAME" DETECTION ---
@@ -585,11 +590,15 @@ HRESULT IDirect3DDevice9Proxy::SetTexture(DWORD Stage, IDirect3DBaseTexture9* pT
 
 			// b) Log texture (adresse + hash + dimensions + format si dispo)
 			//    (Texture log: address + hash + size + format when available)
+
+
+
 			if (g_textureLog.good())
 			{
-				g_textureLog << "[SetTexture] stage=0"
+				g_textureLog << "[SetTexture] drawCall=" << g_drawCallID << " stage=0"
 					<< " ptr=" << pTexture
-					<< " hash=0x" << std::hex << texHash << std::dec;
+					<< " hash=0x" << std::hex << texHash << std::dec << " ...";
+
 
 				// Si width/height/format non remplis (hash récupéré du cache), on peut
 				// relire le desc ici pour le log uniquement.
@@ -610,7 +619,7 @@ HRESULT IDirect3DDevice9Proxy::SetTexture(DWORD Stage, IDirect3DBaseTexture9* pT
 
 				if (format != D3DFMT_UNKNOWN)
 					g_textureLog << " fmt=" << static_cast<int>(format);
-
+			
 				g_textureLog << "\n";
 			}
 
@@ -809,7 +818,7 @@ HRESULT IDirect3DDevice9Proxy::DrawIndexedPrimitive(
 	UINT StartIndex,
 	UINT PrimCount)
 {
-	drawCallCount++;
+	++g_drawCallID; // identifiant global partagé entre tous les hooks
 
 	// See texturehash.cpp for details on hash-based vegetation detection.
 // (This is a temporary dev-stage solution; see notes there for future plan.)
@@ -937,9 +946,47 @@ HRESULT IDirect3DDevice9Proxy::SetVertexDeclaration(IDirect3DVertexDeclaration9*
 {
 	if (g_bEnableDrawCallLogging)
 	{
-		logVertexDecl << "SetVertexDeclaration(Decl=" << pDecl << ")\n";
+		logVertexDecl << "[SetVertexDeclaration] drawCall=" << g_drawCallID
+			<< " Decl=" << pDecl;
+
+		if (pDecl)
+		{
+			D3DVERTEXELEMENT9 elements[64]; // Max possible
+			UINT numElements = 0;
+
+			if (SUCCEEDED(pDecl->GetDeclaration(elements, &numElements)))
+			{
+				logVertexDecl << " {";
+				for (UINT i = 0; i < numElements; ++i)
+				{
+					const auto& e = elements[i];
+					if (e.Stream == 0xFF && e.Type == D3DDECLTYPE_UNUSED) break; // End marker
+
+					logVertexDecl << " ["
+						<< "Stream=" << (int)e.Stream
+						<< ", Offset=" << (int)e.Offset
+						<< ", Type=" << (int)e.Type
+						<< ", Method=" << (int)e.Method
+						<< ", Usage=" << (int)e.Usage
+						<< ", UsageIdx=" << (int)e.UsageIndex
+						<< "]";
+				}
+				logVertexDecl << " }";
+			}
+			else
+			{
+				logVertexDecl << " [Failed to retrieve declaration]";
+			}
+		}
+		else
+		{
+			logVertexDecl << " (null)";
+		}
+
+		logVertexDecl << "\n";
 	}
-	return(origIDirect3DDevice9->SetVertexDeclaration(pDecl));
+
+	return origIDirect3DDevice9->SetVertexDeclaration(pDecl);
 }
 
 HRESULT IDirect3DDevice9Proxy::GetVertexDeclaration(IDirect3DVertexDeclaration9** ppDecl)
@@ -947,15 +994,27 @@ HRESULT IDirect3DDevice9Proxy::GetVertexDeclaration(IDirect3DVertexDeclaration9*
 	return(origIDirect3DDevice9->GetVertexDeclaration(ppDecl));
 }
 
-HRESULT IDirect3DDevice9Proxy::SetFVF(DWORD FVF)
-{
-	if (g_bEnableDrawCallLogging)
+	HRESULT IDirect3DDevice9Proxy::SetFVF(DWORD FVF)
 	{
-		logFVF << "SetFVF(FVF=0x" << std::hex << FVF << std::dec << ")\n";
+		if (g_bEnableDrawCallLogging)
+		{
+			logFVF << "[SetFVF] drawCall=" << g_drawCallID << " FVF=0x"
+				<< std::hex << FVF << std::dec << "\n";
+
+
+
+			// Ajout du hash de la texture courante bindée (via stage 0)
+			if (g_lastTextureHash != 0)
+			{
+				logFVF << " lastTexHash=0x" << std::hex << g_lastTextureHash << std::dec;
+			}
+
+			logFVF << "\n";
+		}
+
+		return(origIDirect3DDevice9->SetFVF(FVF));
 	}
 
-	return(origIDirect3DDevice9->SetFVF(FVF));
-}
 
 HRESULT IDirect3DDevice9Proxy::GetFVF(DWORD* pFVF)
 {
@@ -970,9 +1029,9 @@ HRESULT IDirect3DDevice9Proxy::SetVertexShader(IDirect3DVertexShader9* pShader)
 {
 	if (g_bEnableDrawCallLogging)
 	{
-		logVertexShader << "SetVertexShader(pShader=" << pShader << ")\n";
+		logVertexShader << "[SetVertexShader] drawCall=" << g_drawCallID
+			<< " pShader=" << pShader << "\n";
 	}
-
 
 	return origIDirect3DDevice9->SetVertexShader(pShader);
 }
@@ -1012,19 +1071,22 @@ HRESULT IDirect3DDevice9Proxy::GetVertexShaderConstantB(UINT StartRegister,BOOL*
 	return(origIDirect3DDevice9->GetVertexShaderConstantB(StartRegister,pConstantData,BoolCount));
 }
 
-HRESULT IDirect3DDevice9Proxy::SetStreamSource(UINT StreamNumber, IDirect3DVertexBuffer9* pStreamData, UINT OffsetInBytes, UINT Stride)
+HRESULT IDirect3DDevice9Proxy::SetStreamSource(
+	UINT StreamNumber,
+	IDirect3DVertexBuffer9* pStreamData,
+	UINT OffsetInBytes,
+	UINT Stride)
 {
 	if (g_bEnableDrawCallLogging)
 	{
-		logStream << "SetStreamSource(Stream=" << StreamNumber
-			<< ", VB=" << pStreamData
-			<< ", Offset=" << OffsetInBytes
-			<< ", Stride=" << Stride << ")\n";
+		logStream << "[SetStreamSource] drawCall=" << g_drawCallID
+			<< " Stream=" << StreamNumber
+			<< " VB=" << pStreamData << " Stride=" << Stride << "\n";
 	}
-
 
 	if (StreamNumber == 0)
 	{
+		// Log texture associée (stage 0)
 		IDirect3DBaseTexture9* tex = nullptr;
 		origIDirect3DDevice9->GetTexture(0, &tex);
 
@@ -1034,6 +1096,79 @@ HRESULT IDirect3DDevice9Proxy::SetStreamSource(UINT StreamNumber, IDirect3DVerte
 		OutputDebugStringA(buf);
 
 		if (tex) tex->Release();
+
+		if (pStreamData)
+		{
+			D3DVERTEXBUFFER_DESC desc{};
+			if (SUCCEEDED(pStreamData->GetDesc(&desc)))
+			{
+				void* pData = nullptr;
+				if (SUCCEEDED(pStreamData->Lock(0, std::min(desc.Size, 512u), &pData, D3DLOCK_READONLY)))
+				{
+					const uint8_t* bytes = static_cast<const uint8_t*>(pData);
+
+					// --- 1) Dump brut (comme avant, en hex) ---
+					const size_t toLog = std::min<size_t>(desc.Size, 64); // 64 bytes ~ 2 vertices typiques
+					std::ostringstream oss;
+					oss << "[VB RawMemory] First " << toLog << " bytes (Stride=" << Stride << "): ";
+					for (size_t i = 0; i < toLog; ++i)
+					{
+						oss << std::hex << std::setw(2) << std::setfill('0') << (int)bytes[i] << " ";
+					}
+					oss << std::dec << "\n";
+					OutputDebugStringA(oss.str().c_str());
+
+					// --- 2) Dump interprété (floats / couleurs / UV) ---
+					const size_t maxVertsToDump = 4; // on dump seulement les 4 premiers vertices
+					std::ostringstream oss2;
+					oss2 << "[VB Dump] Stride=" << Stride
+						<< " (showing first " << maxVertsToDump << " vertices)\n";
+
+					for (size_t v = 0; v < maxVertsToDump; ++v)
+					{
+						const uint8_t* vtx = bytes + v * Stride;
+
+						if (vtx + 24 > bytes + desc.Size) break; // sécurité
+
+						float x = *reinterpret_cast<const float*>(vtx + 0);
+						float y = *reinterpret_cast<const float*>(vtx + 4);
+						float z = *reinterpret_cast<const float*>(vtx + 8);
+
+						DWORD diffuse = *reinterpret_cast<const DWORD*>(vtx + 12);
+						float u = *reinterpret_cast<const float*>(vtx + 16);
+						float v_ = *reinterpret_cast<const float*>(vtx + 20);
+
+						// Si stride >= 32  extra 2 floats (probablement UV2)
+						float extra1 = 0.0f, extra2 = 0.0f;
+						if (Stride >= 32)
+						{
+							extra1 = *reinterpret_cast<const float*>(vtx + 24);
+							extra2 = *reinterpret_cast<const float*>(vtx + 28);
+						}
+
+						// Conversion couleur  RGBA
+						unsigned char r = (diffuse >> 16) & 0xFF;
+						unsigned char g = (diffuse >> 8) & 0xFF;
+						unsigned char b = (diffuse) & 0xFF;
+						unsigned char a = (diffuse >> 24) & 0xFF;
+
+						oss2 << " V" << v
+							<< " Pos(" << x << ", " << y << ", " << z << ")"
+							<< " Col(RGBA=" << (int)r << "," << (int)g << "," << (int)b << "," << (int)a << ")"
+							<< " UV(" << u << "," << v_ << ")";
+
+						if (Stride >= 32)
+							oss2 << " Extra(" << extra1 << "," << extra2 << ")";
+
+						oss2 << "\n";
+					}
+
+					OutputDebugStringA(oss2.str().c_str());
+
+					pStreamData->Unlock();
+				}
+			}
+		}
 	}
 
 	return origIDirect3DDevice9->SetStreamSource(StreamNumber, pStreamData, OffsetInBytes, Stride);
@@ -1059,7 +1194,8 @@ HRESULT IDirect3DDevice9Proxy::SetIndices(IDirect3DIndexBuffer9* pIndexData)
 {
 	if (g_bEnableDrawCallLogging)
 	{
-		logVertexBuffer << "SetIndices(IndexBuffer=" << pIndexData << ")\n";
+		logVertexBuffer << "[SetIndices] drawCall=" << g_drawCallID
+			<< " IndexBuffer=" << pIndexData << "\n";
 	}
 
 	return(origIDirect3DDevice9->SetIndices(pIndexData));
@@ -1079,7 +1215,8 @@ HRESULT IDirect3DDevice9Proxy::SetPixelShader(IDirect3DPixelShader9* pShader)
 {
 	if (g_bEnableDrawCallLogging)
 	{
-		logPixelShader << "SetPixelShader(pShader=" << pShader << ")\n";
+		logPixelShader << "[SetPixelShader] drawCall=" << g_drawCallID
+			<< " pShader=" << pShader << "\n";
 	}
 	if (g_captureNextFrame)
 	g_frameLog << "SetPixelShader(" << pShader << ")\n";
