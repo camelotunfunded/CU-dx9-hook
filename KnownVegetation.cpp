@@ -5,7 +5,9 @@
 std::set<uint32_t> knownVegetationHashes = {
     0x101ECAB5, // Exemple hash, remplace par les tiens
     0xED42CB33,
-    0x30B34F35
- 
+    0x30B34F35,
+    0xed42cb33
+
+
     // Ajoute-en d'autres issus des logs
 };

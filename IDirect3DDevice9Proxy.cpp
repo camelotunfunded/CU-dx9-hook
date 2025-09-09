@@ -358,8 +358,8 @@ HRESULT IDirect3DDevice9Proxy::BeginScene()
 {
 	if (g_triggerNextFrameCapture)
 	{
-		g_triggerNextFrameCapture = true;
-		g_captureNextFrame = false;
+		g_triggerNextFrameCapture = false; // on ARME la capture  //let's ARM the capture
+		g_captureNextFrame = true; // on CONSUME le trigger //we CONSUME the trigger
 		OutputDebugStringA("[LOG] Capture déclenchée automatiquement\n");
 	}
 
@@ -382,16 +382,39 @@ HRESULT IDirect3DDevice9Proxy::BeginScene()
 //NOTE IMPORTANTE///
 // ce jeu de merde appelle EndScene deux fois par image. Ca bouffe les effets si vous ne le forcez pas à ne traiter que le deuxieme appel.
 // Il faut donc compter les appels et ne faire le traitement qu'au second appel.
+// IMPORTANT NOTE///
+// this damn game calls EndScene twice per frame. It breaks effects if you don't force it to only process the second call.
+// So you have to count the calls and only process on the second call.
 
 
 
 
-HRESULT IDirect3DDevice9Proxy::EndScene(void)
+HRESULT IDirect3DDevice9Proxy::EndScene()
 {
-	// Ce jeu appelle EndScene deux fois par image.
-	// [REMPLACÉ] On ne fait plus rien, juste forward l'appel natif
+	// Ce jeu appelle EndScene deux fois par image — on n'agit qu'au 2e
+	static int endSceneCallCount = 0; // si pas déjà global
+	endSceneCallCount++;
+
+	if (endSceneCallCount >= 2)
+	{
+		if (g_captureNextFrame)
+		{
+			// créer le dossier si nécessaire
+			CreateDirectoryA("C:\\D3D9Proxy\\frames", NULL);
+
+			ExportBackBufferAsJPG(origIDirect3DDevice9, g_frameIndex); // ta fonction utilitaire
+			g_frameLog << "---frame " << std::setw(3) << std::setfill('0') << g_frameIndex << " end---\n";
+			g_frameIndex++;
+
+			FlushLogs();            // pousse frame_log et textures.log sur disque
+			g_captureNextFrame = false;
+		}
+		endSceneCallCount = 0;      // reset pour la prochaine image
+	}
+
 	return origIDirect3DDevice9->EndScene();
 }
+
 
 
 
@@ -485,33 +508,54 @@ HRESULT IDirect3DDevice9Proxy::GetTexture(DWORD Stage,IDirect3DBaseTexture9** pp
 
 HRESULT IDirect3DDevice9Proxy::SetTexture(DWORD Stage, IDirect3DBaseTexture9* pTexture)
 {
-	uint32_t texHash = 0;
-	UINT width = 0, height = 0;
-	D3DFORMAT format = D3DFMT_UNKNOWN;
+	// Variables pour info / logging (facultatif) — (Optional info for logging)
+	uint32_t   texHash = 0;
+	UINT       width = 0, height = 0;
+	D3DFORMAT  format = D3DFMT_UNKNOWN;
 
+	IDirect3DTexture9* tex2D = nullptr;
+
+	// On ne traite que les textures 2D (D3DRTYPE_TEXTURE) — (Handle 2D textures only)
 	if (pTexture && pTexture->GetType() == D3DRTYPE_TEXTURE)
 	{
-		IDirect3DTexture9* tex = static_cast<IDirect3DTexture9*>(pTexture);
+		tex2D = static_cast<IDirect3DTexture9*>(pTexture);
 
-		// Récupère le hash s'il existe, sinon le calcule et le stocke
+		// 1) Récupère un hash existant, sinon le calcule et le met en cache
+		//    (Get existing hash if present; otherwise compute and cache it)
 		auto it = g_textureHashes.find(pTexture);
-		if (it != g_textureHashes.end()) {
+		if (it != g_textureHashes.end())
+		{
 			texHash = it->second;
 		}
-		else {
-			D3DSURFACE_DESC desc;
-			if (SUCCEEDED(tex->GetLevelDesc(0, &desc))) {
+		else
+		{
+			D3DSURFACE_DESC desc{};
+			if (SUCCEEDED(tex2D->GetLevelDesc(0, &desc)))
+			{
 				width = desc.Width;
 				height = desc.Height;
 				format = desc.Format;
 
 				IDirect3DSurface9* surface = nullptr;
-				if (SUCCEEDED(tex->GetSurfaceLevel(0, &surface))) {
-					D3DLOCKED_RECT locked;
-					if (SUCCEEDED(surface->LockRect(&locked, nullptr, D3DLOCK_READONLY))) {
-						size_t sampleSize = std::min<size_t>(locked.Pitch * 16, locked.Pitch * desc.Height);
-						texHash = HashTextureMemory(locked.pBits, sampleSize);
-						g_textureHashes[pTexture] = texHash; // Stocke le hash
+				if (SUCCEEDED(tex2D->GetSurfaceLevel(0, &surface)) && surface)
+				{
+					D3DLOCKED_RECT locked{};
+					// Lecture seule, petite fenêtre pour ne pas impacter les perfs
+					// (Read-only, small sample window to minimize perf impact)
+					if (SUCCEEDED(surface->LockRect(&locked, nullptr, D3DLOCK_READONLY)))
+					{
+						// Échantillonner min(pitch*16 lignes, texture entière)
+						// (Sample min(pitch*16 rows, full texture))
+						const size_t sampleSize =
+							std::min<size_t>(static_cast<size_t>(locked.Pitch) * 16,
+								static_cast<size_t>(locked.Pitch) * desc.Height);
+
+						if (locked.pBits && sampleSize > 0)
+						{
+							texHash = HashTextureMemory(locked.pBits, sampleSize);
+							g_textureHashes[pTexture] = texHash; // Cache le hash — (Cache the hash)
+						}
+
 						surface->UnlockRect();
 					}
 					surface->Release();
@@ -519,23 +563,98 @@ HRESULT IDirect3DDevice9Proxy::SetTexture(DWORD Stage, IDirect3DBaseTexture9* pT
 			}
 		}
 
-		// Slot 0 = principale texture de dessin
-		if (Stage == 0) {
+		// 2) Si Stage==0 : c'est la texture principale dessinée
+		//    (Stage 0 is the primary draw texture)
+		if (Stage == 0)
+		{
 			g_lastTextureHash = texHash;
 
-			// Si c'est une texture végétation, on la stocke dans la map globale si absente
-			if (knownVegetationHashes.find(texHash) != knownVegetationHashes.end()) {
-				if (g_vegetationTexturesByHash.find(texHash) == g_vegetationTexturesByHash.end()) {
-					if (tex) {
-						tex->AddRef();
-						g_vegetationTexturesByHash[texHash] = tex;
+			// a) Si la texture est une "végétation", mémoriser un AddRef() dans la map globale
+			//    (If it's a vegetation texture, store it in the global map with AddRef)
+			if (texHash != 0 && knownVegetationHashes.find(texHash) != knownVegetationHashes.end())
+			{
+				if (g_vegetationTexturesByHash.find(texHash) == g_vegetationTexturesByHash.end())
+				{
+					if (tex2D)
+					{
+						tex2D->AddRef();
+						g_vegetationTexturesByHash[texHash] = tex2D;
 					}
+				}
+			}
+
+			// b) Log texture (adresse + hash + dimensions + format si dispo)
+			//    (Texture log: address + hash + size + format when available)
+			if (g_textureLog.good())
+			{
+				g_textureLog << "[SetTexture] stage=0"
+					<< " ptr=" << pTexture
+					<< " hash=0x" << std::hex << texHash << std::dec;
+
+				// Si width/height/format non remplis (hash récupéré du cache), on peut
+				// relire le desc ici pour le log uniquement.
+				// (If width/height/format are empty because we used the cache, fill for logging.)
+				if ((width == 0 || height == 0) && tex2D)
+				{
+					D3DSURFACE_DESC desc{};
+					if (SUCCEEDED(tex2D->GetLevelDesc(0, &desc)))
+					{
+						width = desc.Width;
+						height = desc.Height;
+						format = desc.Format;
+					}
+				}
+
+				if (width && height)
+					g_textureLog << " size=" << width << "x" << height;
+
+				if (format != D3DFMT_UNKNOWN)
+					g_textureLog << " fmt=" << static_cast<int>(format);
+
+				g_textureLog << "\n";
+			}
+
+			// c) Export JPG optionnel : une seule fois par pointeur texture
+			//    (Optional JPG export: once per texture pointer)
+			if (g_bEnableJpgExport && tex2D)
+			{
+				// Insert renvoie true si l'élément n'existait pas
+				// (Insert returns true if this pointer was not seen before)
+				if (g_loggedTextures.insert(pTexture).second)
+				{
+					// S'assurer que le dossier existe
+					// (Make sure target directory exists)
+					CreateDirectoryA("C:\\D3D9Proxy\\jpg", nullptr);
+
+					char name[128]{};
+					if (texHash != 0)
+						sprintf_s(name, "tex_0x%08X", texHash);
+					else
+						sprintf_s(name, "tex_ptr_%p", pTexture);
+
+					// Appel à l'utilitaire d'export JPG
+					// (Call utility to export as JPG)
+					ExportTextureAsJPG(tex2D, name);
 				}
 			}
 		}
 	}
+	else
+	{
+		// pTexture nul ou non-2D : si Stage==0, on peut remettre un hash neutre
+		// (Null or non-2D texture: if Stage 0, reset last hash)
+		if (Stage == 0)
+			g_lastTextureHash = 0;
 
-	// Appel direct à la fonction d'origine
+		// Log léger pour suivi des clears/unbinds
+		// (Light log to observe clears/unbinds)
+		if (g_textureLog.good())
+		{
+			g_textureLog << "[SetTexture] stage=" << Stage << " ptr=null-or-non2D\n";
+		}
+	}
+
+	// Appel direct à la fonction d'origine — (Forward to the original D3D9)
 	return origIDirect3DDevice9->SetTexture(Stage, pTexture);
 }
 
