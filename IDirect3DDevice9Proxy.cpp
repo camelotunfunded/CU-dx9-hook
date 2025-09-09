@@ -593,7 +593,7 @@ HRESULT IDirect3DDevice9Proxy::SetTexture(DWORD Stage, IDirect3DBaseTexture9* pT
 
 
 
-			if (g_textureLog.good())
+			if (g_bEnableTextureLog && g_textureLog.good())
 			{
 				g_textureLog << "[SetTexture] drawCall=" << g_drawCallID << " stage=0"
 					<< " ptr=" << pTexture
@@ -657,7 +657,7 @@ HRESULT IDirect3DDevice9Proxy::SetTexture(DWORD Stage, IDirect3DBaseTexture9* pT
 
 		// Log léger pour suivi des clears/unbinds
 		// (Light log to observe clears/unbinds)
-		if (g_textureLog.good())
+		if (g_bEnableTextureLog && g_textureLog.good())
 		{
 			g_textureLog << "[SetTexture] stage=" << Stage << " ptr=null-or-non2D\n";
 		}

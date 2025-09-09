@@ -1,4 +1,4 @@
-// === Vertex Format ===
+// === Vertex Format (herbe) ===
 // position : float3 (POSITION)
 // color    : float4 (COLOR0)
 // texcoord : float2 (TEXCOORD0)
@@ -36,8 +36,9 @@ VS_OUTPUT VS(VS_INPUT input)
     VS_OUTPUT output;
 
     // --- mouvement exagéré ---
-    float sway = sin(input.position.x * 0.5 + Time * 3.0) * 1.0   // onde forte en X
-               + cos(input.position.z * 0.7 + Time * 2.0) * 0.5;  // + un peu de chaos via Z
+    // onde rapide et forte
+    float sway = sin(input.position.x * 0.5 + Time * 5.0) * 2.0
+               + cos(input.position.z * 0.7 + Time * 3.0) * 1.0;
 
     float3 animatedPos = input.position;
     animatedPos.y += sway; // grand déplacement vertical
@@ -52,7 +53,7 @@ VS_OUTPUT VS(VS_INPUT input)
 float4 PS(VS_OUTPUT input) : COLOR
 {
     float4 texColor = tex2D(BaseSampler, input.texcoord);
-    return texColor * input.color; // applique la couleur diffuse
+    return texColor * input.color; // applique alpha/couleur diffuse
 }
 
 technique Vegetation

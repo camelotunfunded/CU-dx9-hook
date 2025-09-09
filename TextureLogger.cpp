@@ -7,8 +7,9 @@
 // Définition de l'interrupteur, désactivé par défaut pour de meilleures performances.
 bool g_bEnableJpgExport = false;
 bool g_bEnableDrawCallLogging = false;
-
+bool g_bEnableTextureLog = false;
 bool g_triggerNextFrameCapture = false;
+
 // Declarations of additional log files
 // Déclarations des fichiers de log supplémentaires
 std::stringstream logDrawIndexed;

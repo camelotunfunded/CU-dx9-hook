@@ -12,7 +12,7 @@
 extern bool g_bEnableJpgExport;
 // Switch for draw call logging
 extern bool g_bEnableDrawCallLogging;
-
+extern bool g_bEnableTextureLog;
 extern std::set<IDirect3DBaseTexture9*> g_loggedTextures;
 
 extern bool g_captureNextFrame;
