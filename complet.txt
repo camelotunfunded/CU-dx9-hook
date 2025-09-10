@@ -69,6 +69,8 @@ b0.1/
 │   │   │   │   └── master
 │   │   │   │   └── origin/
 │   │   │   │   │   └── master
+│   │   ├── 03/
+│   │   ├── 0f/
 │   │   ├── 14/
 │   │   ├── 1a/
 │   │   ├── 1c/
@@ -76,19 +78,26 @@ b0.1/
 │   │   ├── 20/
 │   │   ├── 25/
 │   │   ├── 26/
+│   │   ├── 29/
 │   │   ├── 2b/
 │   │   ├── 2f/
 │   │   ├── 33/
 │   │   ├── 35/
 │   │   ├── 3a/
 │   │   ├── 3b/
+│   │   ├── 3c/
 │   │   ├── 3d/
 │   │   ├── 3e/
 │   │   ├── 45/
+│   │   ├── 4c/
 │   │   ├── 4d/
 │   │   ├── 51/
 │   │   ├── 5d/
+│   │   ├── 60/
+│   │   ├── 66/
+│   │   ├── 6e/
 │   │   ├── 71/
+│   │   ├── 76/
 │   │   ├── 7a/
 │   │   ├── 7b/
 │   │   ├── 80/
@@ -100,9 +109,11 @@ b0.1/
 │   │   ├── 8d/
 │   │   ├── 92/
 │   │   ├── 94/
+│   │   ├── 96/
 │   │   ├── a0/
 │   │   ├── a2/
 │   │   ├── a4/
+│   │   ├── ab/
 │   │   ├── b2/
 │   │   ├── b3/
 │   │   ├── b8/
@@ -115,31 +126,48 @@ b0.1/
 │   │   ├── d1/
 │   │   ├── d2/
 │   │   ├── d3/
+│   │   ├── db/
+│   │   ├── de/
 │   │   ├── e4/
+│   │   ├── e7/
+│   │   ├── ea/
 │   │   ├── f2/
 │   │   ├── info/
 │   │   └── pack/
+│   │   │   └── e6a8140b17ae21c8771403d3af2dabcff309ea
+│   │   │   └── 4c0e9a9638b21c9d4ccc43a3510b8320bb1a57
 │   │   │   └── 736beb5907fff2b7c299e1e67ee6437665ef36
 │   │   │   └── 7def4bc95c45dc1d666c61ec7aab88cba7242f
+│   │   │   ├── 071aa50192358c1d3196621c6ce5d5f90fed06
 │   │   │   └── c67f72b5649962b04794c9bae987f3fbb249d2
 │   │   │   └── f0c423042b46cb1d617b81efb715defbe8054d
 │   │   │   └── 72483230491af3e9da3c4b1aa0117284237371
 │   │   │   └── bc5de0160eb966c0d2aa3c2169287b6e1f75af
 │   │   │   └── 5035fed256dbaa2edc6a0343e4925bde32f990
+│   │   │   └── cef15180a276e8ca52530f37c5156bff2493fc
 │   │   │   └── bd730f7e57c50fd2501f2e2de5b2021f43cde9
 │   │   │   └── ad89e4e91c6ca5152d0933eec7dcc4b049774b
 │   │   │   └── dcd7774d73d0239663c94a2a8fbccb05345a07
 │   │   │   └── 593c83b689d4f0536e757af2e5b1d89234a070
 │   │   │   └── f2ad787655313e597599576fa74aaf24206923
 │   │   │   └── 220420a072d27dbedf437ef90a94f5c38db77e
+│   │   │   └── cf36f91521e82fe95f41ab895a1f219cfebe5e
 │   │   │   ├── 2c7a0f762ad86727806bf4073f8e16bffd09a4
 │   │   │   └── a329ba6088cbde2e1c61135265c66b623bb7c0
-│   │   │   └── 041609b035c761dbcf89d208cb5940b4873c4d
+│   │   │   ├── 041609b035c761dbcf89d208cb5940b4873c4d
+│   │   │   └── dfc41c2fc5551f82a1258f4048df850396d075
 │   │   │   └── de23dfd10c40adde3a39413ec872b52d411abb
-│   │   │   └── 985e8bcb2d6045d76d820e66b463d672581e1b
-│   │   │   └── 930db2bdffeb1fab51771e2f34b73454fda799
+│   │   │   └── bba0a38022b9d287df1c4331cf71eeddf7bcde
+│   │   │   ├── 985e8bcb2d6045d76d820e66b463d672581e1b
+│   │   │   └── cedb4534be98f46d36fa7f43ade05f03610101
+│   │   │   ├── 930db2bdffeb1fab51771e2f34b73454fda799
+│   │   │   └── a493e743fe169ab575c9449c4ffb885f502109
 │   │   │   └── 55e182d11cdae0102ca314e8edf87d150828e5
+│   │   │   └── 4976e9f887011822a27a95710cbe4a2d48f369
+│   │   │   └── 0dc3e87f711dee3f2fa39b041e2d1cb1eaa9de
+│   │   │   └── 2b2e4df83d34949e52cd04d1b57958558391a1
 │   │   │   └── 71f8895668300c073f9cd7d1010a4bf9e7c161
+│   │   │   └── e803327974f8daa53a8d36f3d3e44616f91fdf
 │   │   │   └── c1d46717ea256447314b191dc173819a2ed0a9
 │   │   │   └── 02aabc502995c2259c5cf816f852f8e6f2bb56
 │   │   │   └── cb42416f4bbe241be4a93a8275a6ed8a90b057
@@ -151,14 +179,19 @@ b0.1/
 │   │   │   └── c0c357680326ff616fe38da394a14b2e37afd7
 │   │   │   └── 75786343d0f2dd9d66237ed11b77702a96df33
 │   │   │   └── 4936c0cac7b8763120e3eacc0a97700631210b
+│   │   │   ├── d758ce900a17dcdd37f067b98ff5f8202f784f
+│   │   │   └── fb132f97e8edec649c1b8892367d48da938089
 │   │   │   ├── 212bfd98955484f878a5a0f0235968d722ba5e
 │   │   │   └── cffab454dffcd1c0dc4556cb206c137fb59177
 │   │   │   └── c557c514c6ed55effc3aea2404905cc6405255
 │   │   │   └── 266d39c0dc96c1163acc896f137f065e3408f9
+│   │   │   └── 439db46be8f02a4a3c6a507d076e8d5a3722d7
 │   │   │   ├── 0de1b00f85efa3a0087a74f88efb4b02604b92
 │   │   │   └── 12f6dd8bbaf90b6627b5a1951c15021cf2b8d8
 │   │   │   └── b3b4bbe89605fc5118e35eea02d4b296a560b4
+│   │   │   ├── 69108f3a76d878ee45d0ada36a71b3289a71c8
 │   │   │   └── 867b6720d3af864621aa9556aa3bb71926020f
+│   │   │   ├── 75531cea2acb92e1a3ba88f2807b20984bce51
 │   │   │   └── 913155366e314061dee144afd5668261268f23
 │   │   │   └── db3850a19dec11032cd7bdede21230121968c7
 │   │   │   └── 87d071bbb1793ac14d89fbbacb864575ee864b
@@ -168,7 +201,12 @@ b0.1/
 │   │   │   └── c280cd49f8ae9158a62a38fc7b6dc495dff665
 │   │   │   └── 4e2f0d48e1313a5036804c8a54ca3680b4cac6
 │   │   │   └── 5f73d9960ebc6a4f08f9d6c495782ce55ab471
+│   │   │   ├── 0d61c65fd2acd6d248bfd8771e64553551e02d
+│   │   │   └── a5ac824968a1f32c6fabbdca54c094fe296966
+│   │   │   └── 3f5682633ec82fa491687be0744d825afea507
 │   │   │   └── 32922e626c79345977fe8541f6968ad385faa5
+│   │   │   └── 1d0ea69a9d55718fd047f39079115249d2f34a
+│   │   │   └── ae02a0226595371c65e09849f319ab64b02cf8
 │   │   │   └── 88702d2fa16d3cdf0035b15a9fcbc552cd88e7
 │   │   ├── heads/
 │   │   ├── remotes/
@@ -176,39 +214,52 @@ b0.1/
 │   │   │   └── master
 │   │   │   └── origin/
 │   │   │   │   └── master
-│   └── d3dproxy/
+│   ├── d3dproxy/
+│   ├── VSWorkspaceState.json
+│   └── slnx.sqlite
 │   │   ├── CopilotIndices/
 │   │   ├── FileContentIndex/
 │   │   ├── copilot-chat/
 │   │   └── v17/
+│   │   │   ├── 17.14.1091.29919/
 │   │   │   └── 17.14.794.21998/
+│   │   │   │   ├── CodeChunks.db
+│   │   │   │   ├── CodeChunks.db-shm
+│   │   │   │   ├── CodeChunks.db-wal
+│   │   │   │   └── SemanticSymbols.db
 │   │   │   │   ├── CodeChunks.db
 │   │   │   │   ├── CodeChunks.db-shm
 │   │   │   │   ├── CodeChunks.db-wal
 │   │   │   │   ├── SemanticSymbols.db
 │   │   │   │   ├── SemanticSymbols.db-shm
 │   │   │   │   └── SemanticSymbols.db-wal
+│   │   │   ├── 02b1a219-d086-4180-b462-80a739f87cab.vsidx
 │   │   │   ├── 090105d1-a4eb-4fa8-976b-af69644a8d1d.vsidx
-│   │   │   ├── 1808538a-9da2-4581-9e6f-89202093694a.vsidx
-│   │   │   ├── 44861303-357b-4399-85b4-ce15fcc987b3.vsidx
 │   │   │   ├── 50f33c03-82a4-42d9-89d1-2e948d78da97.vsidx
-│   │   │   └── e3992144-be61-4c0a-a0f9-b8ad9d628293.vsidx
+│   │   │   ├── 8aca0f92-361d-4663-9b50-f6a66e0daa0e.vsidx
+│   │   │   └── e380e24c-c25b-4627-9d8c-6e0008d69e87.vsidx
 │   │   │   └── 62535102/
 │   │   │   │   └── sessions/
-│   │   │   │   │   └── 1e85b128-9a57-47ec-9c43-4145fac4542b
+│   │   │   │   │   ├── 1e85b128-9a57-47ec-9c43-4145fac4542b
+│   │   │   │   │   ├── 243efe91-dbdf-401c-bd9c-d19417cfae0f
+│   │   │   │   │   ├── bd54be33-ba8f-4d15-a01d-cad4d05e34af
+│   │   │   │   │   └── e19e2b15-142d-4114-84e0-bd7a965bbae8
 │   │   │   ├── ipch/
 │   │   │   ├── .suo
 │   │   │   ├── Browse.VC.db
-│   │   │   ├── Browse.VC.opendb
 │   │   │   ├── DocumentLayout.backup.json
 │   │   │   ├── DocumentLayout.json
 │   │   │   └── Solution.VC.db
 │   │   │   │   └── AutoPCH/
+│   │   │   │   │   ├── 139b5920b811431f/
 │   │   │   │   │   ├── 1dc05a66873938e5/
 │   │   │   │   │   ├── 365b6dc2ff121755/
 │   │   │   │   │   ├── 42e6b51b26aac0a5/
 │   │   │   │   │   ├── 447e9d18a29832b7/
+│   │   │   │   │   ├── 474505082b2cea2b/
+│   │   │   │   │   ├── 4a3934f7e95074b2/
 │   │   │   │   │   ├── 4ecc11b2bcb9c431/
+│   │   │   │   │   ├── 54b85035acc60df1/
 │   │   │   │   │   ├── 5555c2321b2a6ffa/
 │   │   │   │   │   ├── 709abc2cbe81c3d5/
 │   │   │   │   │   ├── 8c845ea10a31d112/
@@ -222,10 +273,12 @@ b0.1/
 │   │   │   │   │   ├── e101397187828e14/
 │   │   │   │   │   ├── f1bb65d9dea4fb99/
 │   │   │   │   │   └── fcc966b58c807ee6/
+│   │   │   │   │   │   └── IDIRECT3D9PROXY.ipch
 │   │   │   │   │   │   └── TEXTURELOGGER.ipch
 │   │   │   │   │   │   └── SHADERMANAGER.ipch
 │   │   │   │   │   │   └── TMPF7DF.TMP.ipch
 │   │   │   │   │   │   └── IDIRECT3DDEVICE9PROXY.ipch
+│   │   │   │   │   │   └── SHADERMANAGER.ipch
 │   │   │   │   │   │   └── TMP4E3.TMP.ipch
 │   │   │   │   │   │   └── TEXTUREHASH.ipch
 │   │   │   │   │   │   └── IDIRECT3DDEVICE9PROXY.ipch
@@ -473,6 +526,11 @@ static std::map<uint32_t, IDirect3DTexture9*> g_vegetationTexturesByHash;
 //COMPTEUR POUR ENDSCENE
 // COUNTER FOR ENDSCENE
 static int endSceneCallCount = 0;
+
+//compteur pour DrawCall, pour croiser avec les logs spars//counter for DrawCall, to cross-reference with separate logs
+uint64_t g_drawCallID = 0;
+
+
 
 
 // --- VARIABLES POUR LA DTECTION "IN-GAME" ---
@@ -815,8 +873,8 @@ HRESULT IDirect3DDevice9Proxy::BeginScene()
 {
 	if (g_triggerNextFrameCapture)
 	{
-		g_triggerNextFrameCapture = true;
-		g_captureNextFrame = false;
+		g_triggerNextFrameCapture = false; // on ARME la capture  //let's ARM the capture
+		g_captureNextFrame = true; // on CONSUME le trigger //we CONSUME the trigger
 		OutputDebugStringA("[LOG] Capture dclenche automatiquement\n");
 	}
 
@@ -839,16 +897,39 @@ HRESULT IDirect3DDevice9Proxy::BeginScene()
 //NOTE IMPORTANTE///
 // ce jeu de merde appelle EndScene deux fois par image. Ca bouffe les effets si vous ne le forcez pas  ne traiter que le deuxieme appel.
 // Il faut donc compter les appels et ne faire le traitement qu'au second appel.
+// IMPORTANT NOTE///
+// this damn game calls EndScene twice per frame. It breaks effects if you don't force it to only process the second call.
+// So you have to count the calls and only process on the second call.
 
 
 
 
-HRESULT IDirect3DDevice9Proxy::EndScene(void)
+HRESULT IDirect3DDevice9Proxy::EndScene()
 {
-	// Ce jeu appelle EndScene deux fois par image.
-	// [REMPLAC] On ne fait plus rien, juste forward l'appel natif
+	// Ce jeu appelle EndScene deux fois par image  on n'agit qu'au 2e
+	static int endSceneCallCount = 0; // si pas dj global
+	endSceneCallCount++;
+
+	if (endSceneCallCount >= 2)
+	{
+		if (g_captureNextFrame)
+		{
+			// crer le dossier si ncessaire
+			CreateDirectoryA("C:\\D3D9Proxy\\frames", NULL);
+
+			ExportBackBufferAsJPG(origIDirect3DDevice9, g_frameIndex); // ta fonction utilitaire
+			g_frameLog << "---frame " << std::setw(3) << std::setfill('0') << g_frameIndex << " end---\n";
+			g_frameIndex++;
+
+			FlushLogs();            // pousse frame_log et textures.log sur disque
+			g_captureNextFrame = false;
+		}
+		endSceneCallCount = 0;      // reset pour la prochaine image
+	}
+
 	return origIDirect3DDevice9->EndScene();
 }
+
 
 
 
@@ -942,33 +1023,54 @@ HRESULT IDirect3DDevice9Proxy::GetTexture(DWORD Stage,IDirect3DBaseTexture9** pp
 
 HRESULT IDirect3DDevice9Proxy::SetTexture(DWORD Stage, IDirect3DBaseTexture9* pTexture)
 {
-	uint32_t texHash = 0;
-	UINT width = 0, height = 0;
-	D3DFORMAT format = D3DFMT_UNKNOWN;
+	// Variables pour info / logging (facultatif)  (Optional info for logging)
+	uint32_t   texHash = 0;
+	UINT       width = 0, height = 0;
+	D3DFORMAT  format = D3DFMT_UNKNOWN;
 
+	IDirect3DTexture9* tex2D = nullptr;
+
+	// On ne traite que les textures 2D (D3DRTYPE_TEXTURE)  (Handle 2D textures only)
 	if (pTexture && pTexture->GetType() == D3DRTYPE_TEXTURE)
 	{
-		IDirect3DTexture9* tex = static_cast<IDirect3DTexture9*>(pTexture);
+		tex2D = static_cast<IDirect3DTexture9*>(pTexture);
 
-		// Rcupre le hash s'il existe, sinon le calcule et le stocke
+		// 1) Rcupre un hash existant, sinon le calcule et le met en cache
+		//    (Get existing hash if present; otherwise compute and cache it)
 		auto it = g_textureHashes.find(pTexture);
-		if (it != g_textureHashes.end()) {
+		if (it != g_textureHashes.end())
+		{
 			texHash = it->second;
 		}
-		else {
-			D3DSURFACE_DESC desc;
-			if (SUCCEEDED(tex->GetLevelDesc(0, &desc))) {
+		else
+		{
+			D3DSURFACE_DESC desc{};
+			if (SUCCEEDED(tex2D->GetLevelDesc(0, &desc)))
+			{
 				width = desc.Width;
 				height = desc.Height;
 				format = desc.Format;
 
 				IDirect3DSurface9* surface = nullptr;
-				if (SUCCEEDED(tex->GetSurfaceLevel(0, &surface))) {
-					D3DLOCKED_RECT locked;
-					if (SUCCEEDED(surface->LockRect(&locked, nullptr, D3DLOCK_READONLY))) {
-						size_t sampleSize = std::min<size_t>(locked.Pitch * 16, locked.Pitch * desc.Height);
-						texHash = HashTextureMemory(locked.pBits, sampleSize);
-						g_textureHashes[pTexture] = texHash; // Stocke le hash
+				if (SUCCEEDED(tex2D->GetSurfaceLevel(0, &surface)) && surface)
+				{
+					D3DLOCKED_RECT locked{};
+					// Lecture seule, petite fentre pour ne pas impacter les perfs
+					// (Read-only, small sample window to minimize perf impact)
+					if (SUCCEEDED(surface->LockRect(&locked, nullptr, D3DLOCK_READONLY)))
+					{
+						// chantillonner min(pitch*16 lignes, texture entire)
+						// (Sample min(pitch*16 rows, full texture))
+						const size_t sampleSize =
+							std::min<size_t>(static_cast<size_t>(locked.Pitch) * 16,
+								static_cast<size_t>(locked.Pitch) * desc.Height);
+
+						if (locked.pBits && sampleSize > 0)
+						{
+							texHash = HashTextureMemory(locked.pBits, sampleSize);
+							g_textureHashes[pTexture] = texHash; // Cache le hash  (Cache the hash)
+						}
+
 						surface->UnlockRect();
 					}
 					surface->Release();
@@ -976,31 +1078,104 @@ HRESULT IDirect3DDevice9Proxy::SetTexture(DWORD Stage, IDirect3DBaseTexture9* pT
 			}
 		}
 
-		// Slot 0 = principale texture de dessin
-		if (Stage == 0) {
+		// 2) Si Stage==0 : c'est la texture principale dessine
+		//    (Stage 0 is the primary draw texture)
+		if (Stage == 0)
+		{
 			g_lastTextureHash = texHash;
 
-			// Si c'est une texture vgtation, on la stocke dans la map globale si absente
-			if (knownVegetationHashes.find(texHash) != knownVegetationHashes.end()) {
-				if (g_vegetationTexturesByHash.find(texHash) == g_vegetationTexturesByHash.end()) {
-					if (tex) {
-						tex->AddRef();
-						g_vegetationTexturesByHash[texHash] = tex;
+			// a) Si la texture est une "vgtation", mmoriser un AddRef() dans la map globale
+			//    (If it's a vegetation texture, store it in the global map with AddRef)
+			if (texHash != 0 && knownVegetationHashes.find(texHash) != knownVegetationHashes.end())
+			{
+				if (g_vegetationTexturesByHash.find(texHash) == g_vegetationTexturesByHash.end())
+				{
+					if (tex2D)
+					{
+						tex2D->AddRef();
+						g_vegetationTexturesByHash[texHash] = tex2D;
 					}
+				}
+			}
+
+			// b) Log texture (adresse + hash + dimensions + format si dispo)
+			//    (Texture log: address + hash + size + format when available)
+
+
+
+			if (g_bEnableTextureLog && g_textureLog.good())
+			{
+				g_textureLog << "[SetTexture] drawCall=" << g_drawCallID << " stage=0"
+					<< " ptr=" << pTexture
+					<< " hash=0x" << std::hex << texHash << std::dec << " ...";
+
+
+				// Si width/height/format non remplis (hash rcupr du cache), on peut
+				// relire le desc ici pour le log uniquement.
+				// (If width/height/format are empty because we used the cache, fill for logging.)
+				if ((width == 0 || height == 0) && tex2D)
+				{
+					D3DSURFACE_DESC desc{};
+					if (SUCCEEDED(tex2D->GetLevelDesc(0, &desc)))
+					{
+						width = desc.Width;
+						height = desc.Height;
+						format = desc.Format;
+					}
+				}
+
+				if (width && height)
+					g_textureLog << " size=" << width << "x" << height;
+
+				if (format != D3DFMT_UNKNOWN)
+					g_textureLog << " fmt=" << static_cast<int>(format);
+			
+				g_textureLog << "\n";
+			}
+
+			// c) Export JPG optionnel : une seule fois par pointeur texture
+			//    (Optional JPG export: once per texture pointer)
+			if (g_bEnableJpgExport && tex2D)
+			{
+				// Insert renvoie true si l'lment n'existait pas
+				// (Insert returns true if this pointer was not seen before)
+				if (g_loggedTextures.insert(pTexture).second)
+				{
+					// S'assurer que le dossier existe
+					// (Make sure target directory exists)
+					CreateDirectoryA("C:\\D3D9Proxy\\jpg", nullptr);
+
+					char name[128]{};
+					if (texHash != 0)
+						sprintf_s(name, "tex_0x%08X", texHash);
+					else
+						sprintf_s(name, "tex_ptr_%p", pTexture);
+
+					// Appel  l'utilitaire d'export JPG
+					// (Call utility to export as JPG)
+					ExportTextureAsJPG(tex2D, name);
 				}
 			}
 		}
 	}
+	else
+	{
+		// pTexture nul ou non-2D : si Stage==0, on peut remettre un hash neutre
+		// (Null or non-2D texture: if Stage 0, reset last hash)
+		if (Stage == 0)
+			g_lastTextureHash = 0;
 
-	// Appel direct  la fonction d'origine
+		// Log lger pour suivi des clears/unbinds
+		// (Light log to observe clears/unbinds)
+		if (g_bEnableTextureLog && g_textureLog.good())
+		{
+			g_textureLog << "[SetTexture] stage=" << Stage << " ptr=null-or-non2D\n";
+		}
+	}
+
+	// Appel direct  la fonction d'origine  (Forward to the original D3D9)
 	return origIDirect3DDevice9->SetTexture(Stage, pTexture);
 }
-
-
-
-
-
-
 
 
 
@@ -1153,7 +1328,7 @@ HRESULT IDirect3DDevice9Proxy::DrawIndexedPrimitive(
 	UINT StartIndex,
 	UINT PrimCount)
 {
-	drawCallCount++;
+	++g_drawCallID; // identifiant global partag entre tous les hooks
 
 	// See texturehash.cpp for details on hash-based vegetation detection.
 // (This is a temporary dev-stage solution; see notes there for future plan.)
@@ -1281,9 +1456,47 @@ HRESULT IDirect3DDevice9Proxy::SetVertexDeclaration(IDirect3DVertexDeclaration9*
 {
 	if (g_bEnableDrawCallLogging)
 	{
-		logVertexDecl << "SetVertexDeclaration(Decl=" << pDecl << ")\n";
+		logVertexDecl << "[SetVertexDeclaration] drawCall=" << g_drawCallID
+			<< " Decl=" << pDecl;
+
+		if (pDecl)
+		{
+			D3DVERTEXELEMENT9 elements[64]; // Max possible
+			UINT numElements = 0;
+
+			if (SUCCEEDED(pDecl->GetDeclaration(elements, &numElements)))
+			{
+				logVertexDecl << " {";
+				for (UINT i = 0; i < numElements; ++i)
+				{
+					const auto& e = elements[i];
+					if (e.Stream == 0xFF && e.Type == D3DDECLTYPE_UNUSED) break; // End marker
+
+					logVertexDecl << " ["
+						<< "Stream=" << (int)e.Stream
+						<< ", Offset=" << (int)e.Offset
+						<< ", Type=" << (int)e.Type
+						<< ", Method=" << (int)e.Method
+						<< ", Usage=" << (int)e.Usage
+						<< ", UsageIdx=" << (int)e.UsageIndex
+						<< "]";
+				}
+				logVertexDecl << " }";
+			}
+			else
+			{
+				logVertexDecl << " [Failed to retrieve declaration]";
+			}
+		}
+		else
+		{
+			logVertexDecl << " (null)";
+		}
+
+		logVertexDecl << "\n";
 	}
-	return(origIDirect3DDevice9->SetVertexDeclaration(pDecl));
+
+	return origIDirect3DDevice9->SetVertexDeclaration(pDecl);
 }
 
 HRESULT IDirect3DDevice9Proxy::GetVertexDeclaration(IDirect3DVertexDeclaration9** ppDecl)
@@ -1291,15 +1504,27 @@ HRESULT IDirect3DDevice9Proxy::GetVertexDeclaration(IDirect3DVertexDeclaration9*
 	return(origIDirect3DDevice9->GetVertexDeclaration(ppDecl));
 }
 
-HRESULT IDirect3DDevice9Proxy::SetFVF(DWORD FVF)
-{
-	if (g_bEnableDrawCallLogging)
+	HRESULT IDirect3DDevice9Proxy::SetFVF(DWORD FVF)
 	{
-		logFVF << "SetFVF(FVF=0x" << std::hex << FVF << std::dec << ")\n";
+		if (g_bEnableDrawCallLogging)
+		{
+			logFVF << "[SetFVF] drawCall=" << g_drawCallID << " FVF=0x"
+				<< std::hex << FVF << std::dec << "\n";
+
+
+
+			// Ajout du hash de la texture courante binde (via stage 0)
+			if (g_lastTextureHash != 0)
+			{
+				logFVF << " lastTexHash=0x" << std::hex << g_lastTextureHash << std::dec;
+			}
+
+			logFVF << "\n";
+		}
+
+		return(origIDirect3DDevice9->SetFVF(FVF));
 	}
 
-	return(origIDirect3DDevice9->SetFVF(FVF));
-}
 
 HRESULT IDirect3DDevice9Proxy::GetFVF(DWORD* pFVF)
 {
@@ -1314,9 +1539,9 @@ HRESULT IDirect3DDevice9Proxy::SetVertexShader(IDirect3DVertexShader9* pShader)
 {
 	if (g_bEnableDrawCallLogging)
 	{
-		logVertexShader << "SetVertexShader(pShader=" << pShader << ")\n";
+		logVertexShader << "[SetVertexShader] drawCall=" << g_drawCallID
+			<< " pShader=" << pShader << "\n";
 	}
-
 
 	return origIDirect3DDevice9->SetVertexShader(pShader);
 }
@@ -1356,19 +1581,22 @@ HRESULT IDirect3DDevice9Proxy::GetVertexShaderConstantB(UINT StartRegister,BOOL*
 	return(origIDirect3DDevice9->GetVertexShaderConstantB(StartRegister,pConstantData,BoolCount));
 }
 
-HRESULT IDirect3DDevice9Proxy::SetStreamSource(UINT StreamNumber, IDirect3DVertexBuffer9* pStreamData, UINT OffsetInBytes, UINT Stride)
+HRESULT IDirect3DDevice9Proxy::SetStreamSource(
+	UINT StreamNumber,
+	IDirect3DVertexBuffer9* pStreamData,
+	UINT OffsetInBytes,
+	UINT Stride)
 {
 	if (g_bEnableDrawCallLogging)
 	{
-		logStream << "SetStreamSource(Stream=" << StreamNumber
-			<< ", VB=" << pStreamData
-			<< ", Offset=" << OffsetInBytes
-			<< ", Stride=" << Stride << ")\n";
+		logStream << "[SetStreamSource] drawCall=" << g_drawCallID
+			<< " Stream=" << StreamNumber
+			<< " VB=" << pStreamData << " Stride=" << Stride << "\n";
 	}
-
 
 	if (StreamNumber == 0)
 	{
+		// Log texture associe (stage 0)
 		IDirect3DBaseTexture9* tex = nullptr;
 		origIDirect3DDevice9->GetTexture(0, &tex);
 
@@ -1378,6 +1606,79 @@ HRESULT IDirect3DDevice9Proxy::SetStreamSource(UINT StreamNumber, IDirect3DVerte
 		OutputDebugStringA(buf);
 
 		if (tex) tex->Release();
+
+		if (pStreamData)
+		{
+			D3DVERTEXBUFFER_DESC desc{};
+			if (SUCCEEDED(pStreamData->GetDesc(&desc)))
+			{
+				void* pData = nullptr;
+				if (SUCCEEDED(pStreamData->Lock(0, std::min(desc.Size, 512u), &pData, D3DLOCK_READONLY)))
+				{
+					const uint8_t* bytes = static_cast<const uint8_t*>(pData);
+
+					// --- 1) Dump brut (comme avant, en hex) ---
+					const size_t toLog = std::min<size_t>(desc.Size, 64); // 64 bytes ~ 2 vertices typiques
+					std::ostringstream oss;
+					oss << "[VB RawMemory] First " << toLog << " bytes (Stride=" << Stride << "): ";
+					for (size_t i = 0; i < toLog; ++i)
+					{
+						oss << std::hex << std::setw(2) << std::setfill('0') << (int)bytes[i] << " ";
+					}
+					oss << std::dec << "\n";
+					OutputDebugStringA(oss.str().c_str());
+
+					// --- 2) Dump interprt (floats / couleurs / UV) ---
+					const size_t maxVertsToDump = 4; // on dump seulement les 4 premiers vertices
+					std::ostringstream oss2;
+					oss2 << "[VB Dump] Stride=" << Stride
+						<< " (showing first " << maxVertsToDump << " vertices)\n";
+
+					for (size_t v = 0; v < maxVertsToDump; ++v)
+					{
+						const uint8_t* vtx = bytes + v * Stride;
+
+						if (vtx + 24 > bytes + desc.Size) break; // scurit
+
+						float x = *reinterpret_cast<const float*>(vtx + 0);
+						float y = *reinterpret_cast<const float*>(vtx + 4);
+						float z = *reinterpret_cast<const float*>(vtx + 8);
+
+						DWORD diffuse = *reinterpret_cast<const DWORD*>(vtx + 12);
+						float u = *reinterpret_cast<const float*>(vtx + 16);
+						float v_ = *reinterpret_cast<const float*>(vtx + 20);
+
+						// Si stride >= 32  extra 2 floats (probablement UV2)
+						float extra1 = 0.0f, extra2 = 0.0f;
+						if (Stride >= 32)
+						{
+							extra1 = *reinterpret_cast<const float*>(vtx + 24);
+							extra2 = *reinterpret_cast<const float*>(vtx + 28);
+						}
+
+						// Conversion couleur  RGBA
+						unsigned char r = (diffuse >> 16) & 0xFF;
+						unsigned char g = (diffuse >> 8) & 0xFF;
+						unsigned char b = (diffuse) & 0xFF;
+						unsigned char a = (diffuse >> 24) & 0xFF;
+
+						oss2 << " V" << v
+							<< " Pos(" << x << ", " << y << ", " << z << ")"
+							<< " Col(RGBA=" << (int)r << "," << (int)g << "," << (int)b << "," << (int)a << ")"
+							<< " UV(" << u << "," << v_ << ")";
+
+						if (Stride >= 32)
+							oss2 << " Extra(" << extra1 << "," << extra2 << ")";
+
+						oss2 << "\n";
+					}
+
+					OutputDebugStringA(oss2.str().c_str());
+
+					pStreamData->Unlock();
+				}
+			}
+		}
 	}
 
 	return origIDirect3DDevice9->SetStreamSource(StreamNumber, pStreamData, OffsetInBytes, Stride);
@@ -1403,7 +1704,8 @@ HRESULT IDirect3DDevice9Proxy::SetIndices(IDirect3DIndexBuffer9* pIndexData)
 {
 	if (g_bEnableDrawCallLogging)
 	{
-		logVertexBuffer << "SetIndices(IndexBuffer=" << pIndexData << ")\n";
+		logVertexBuffer << "[SetIndices] drawCall=" << g_drawCallID
+			<< " IndexBuffer=" << pIndexData << "\n";
 	}
 
 	return(origIDirect3DDevice9->SetIndices(pIndexData));
@@ -1423,7 +1725,8 @@ HRESULT IDirect3DDevice9Proxy::SetPixelShader(IDirect3DPixelShader9* pShader)
 {
 	if (g_bEnableDrawCallLogging)
 	{
-		logPixelShader << "SetPixelShader(pShader=" << pShader << ")\n";
+		logPixelShader << "[SetPixelShader] drawCall=" << g_drawCallID
+			<< " pShader=" << pShader << "\n";
 	}
 	if (g_captureNextFrame)
 	g_frameLog << "SetPixelShader(" << pShader << ")\n";
@@ -1499,6 +1802,7 @@ Fichier : IDirect3DDevice9Proxy.h
 
 #include "defines.h"
 
+extern uint64_t g_drawCallID;
 
 
 class IDirect3DDevice9Proxy :
@@ -1648,12 +1952,14 @@ Fichier : KnownVegetation.cpp
 #include <set>
 #include <cstdint>
 
-// Ensemble de hashes dtects comme tant des textures de vgtation
+// Ensemble de hashes dtects comme tant des textures de vgtation/ all hashes identified as vegetation textures
 std::set<uint32_t> knownVegetationHashes = {
     0x101ECAB5, // Exemple hash, remplace par les tiens
-    0xED42CB33,
-    0x30B34F35
- 
+    0xED42CB33, //FVF 0x112 sur la game.dll d'origine
+    0x30B34F35,
+   
+
+
     // Ajoute-en d'autres issus des logs
 };
 
@@ -1823,8 +2129,9 @@ Fichier : TextureLogger.cpp
 // Dfinition de l'interrupteur, dsactiv par dfaut pour de meilleures performances.
 bool g_bEnableJpgExport = false;
 bool g_bEnableDrawCallLogging = false;
-
+bool g_bEnableTextureLog = false;
 bool g_triggerNextFrameCapture = false;
+
 // Declarations of additional log files
 // Dclarations des fichiers de log supplmentaires
 std::stringstream logDrawIndexed;
@@ -1942,7 +2249,7 @@ Fichier : Texturelogger.h
 extern bool g_bEnableJpgExport;
 // Switch for draw call logging
 extern bool g_bEnableDrawCallLogging;
-
+extern bool g_bEnableTextureLog;
 extern std::set<IDirect3DBaseTexture9*> g_loggedTextures;
 
 extern bool g_captureNextFrame;
@@ -3895,8 +4202,10 @@ FARPROC origProc[15] = {0};
 extern "C" IDirect3D9* WINAPI __ProxyFunc9(UINT SDKVersion) {
 	// C'EST LE BON ENDROIT POUR INITIALISER LES LOGS
 	// C'est appel juste aprs le chargement de la DLL, mais dans un contexte sr.
-	
-	InitTextureLog();
+
+
+		
+
 
 
 	//Recall original function
@@ -3939,6 +4248,8 @@ BOOL WINAPI DllMain(HINSTANCE hInst, DWORD reason, LPVOID){
 		);
 		if (logChoice == IDYES) {
 			g_bEnableDrawCallLogging = true;
+			g_bEnableTextureLog = true;
+			InitTextureLog();
 		}
 
 

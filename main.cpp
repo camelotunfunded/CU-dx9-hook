@@ -9,8 +9,6 @@ FARPROC origProc[15] = {0};
 
 //Direct3DCreate9
 extern "C" IDirect3D9* WINAPI __ProxyFunc9(UINT SDKVersion) {
-	// C'EST LE BON ENDROIT POUR INITIALISER LES LOGS
-	// C'est appelé juste après le chargement de la DLL, mais dans un contexte sûr.
 
 
 		

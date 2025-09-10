@@ -513,20 +513,17 @@ HRESULT IDirect3DDevice9Proxy::GetTexture(DWORD Stage,IDirect3DBaseTexture9** pp
 
 HRESULT IDirect3DDevice9Proxy::SetTexture(DWORD Stage, IDirect3DBaseTexture9* pTexture)
 {
-	// Variables pour info / logging (facultatif) — (Optional info for logging)
 	uint32_t   texHash = 0;
 	UINT       width = 0, height = 0;
 	D3DFORMAT  format = D3DFMT_UNKNOWN;
 
 	IDirect3DTexture9* tex2D = nullptr;
 
-	// On ne traite que les textures 2D (D3DRTYPE_TEXTURE) — (Handle 2D textures only)
 	if (pTexture && pTexture->GetType() == D3DRTYPE_TEXTURE)
 	{
 		tex2D = static_cast<IDirect3DTexture9*>(pTexture);
 
-		// 1) Récupère un hash existant, sinon le calcule et le met en cache
-		//    (Get existing hash if present; otherwise compute and cache it)
+		// 1) Récupère un hash existant, sinon le calcule
 		auto it = g_textureHashes.find(pTexture);
 		if (it != g_textureHashes.end())
 		{
@@ -545,12 +542,8 @@ HRESULT IDirect3DDevice9Proxy::SetTexture(DWORD Stage, IDirect3DBaseTexture9* pT
 				if (SUCCEEDED(tex2D->GetSurfaceLevel(0, &surface)) && surface)
 				{
 					D3DLOCKED_RECT locked{};
-					// Lecture seule, petite fenêtre pour ne pas impacter les perfs
-					// (Read-only, small sample window to minimize perf impact)
 					if (SUCCEEDED(surface->LockRect(&locked, nullptr, D3DLOCK_READONLY)))
 					{
-						// Échantillonner min(pitch*16 lignes, texture entière)
-						// (Sample min(pitch*16 rows, full texture))
 						const size_t sampleSize =
 							std::min<size_t>(static_cast<size_t>(locked.Pitch) * 16,
 								static_cast<size_t>(locked.Pitch) * desc.Height);
@@ -558,7 +551,7 @@ HRESULT IDirect3DDevice9Proxy::SetTexture(DWORD Stage, IDirect3DBaseTexture9* pT
 						if (locked.pBits && sampleSize > 0)
 						{
 							texHash = HashTextureMemory(locked.pBits, sampleSize);
-							g_textureHashes[pTexture] = texHash; // Cache le hash — (Cache the hash)
+							g_textureHashes[pTexture] = texHash;
 						}
 
 						surface->UnlockRect();
@@ -568,15 +561,13 @@ HRESULT IDirect3DDevice9Proxy::SetTexture(DWORD Stage, IDirect3DBaseTexture9* pT
 			}
 		}
 
-		// 2) Si Stage==0 : c'est la texture principale dessinée
-		//    (Stage 0 is the primary draw texture)
+		// 2) Slot principal : Stage 0
 		if (Stage == 0)
 		{
 			g_lastTextureHash = texHash;
 
-			// a) Si la texture est une "végétation", mémoriser un AddRef() dans la map globale
-			//    (If it's a vegetation texture, store it in the global map with AddRef)
-			if (texHash != 0 && knownVegetationHashes.find(texHash) != knownVegetationHashes.end())
+			// a) Si la texture est une végétation connue  garder un AddRef
+			if (texHash != 0 && knownVegetationHashes.count(texHash))
 			{
 				if (g_vegetationTexturesByHash.find(texHash) == g_vegetationTexturesByHash.end())
 				{
@@ -588,21 +579,15 @@ HRESULT IDirect3DDevice9Proxy::SetTexture(DWORD Stage, IDirect3DBaseTexture9* pT
 				}
 			}
 
-			// b) Log texture (adresse + hash + dimensions + format si dispo)
-			//    (Texture log: address + hash + size + format when available)
-
-
-
+			// b) Logging conditionnel
 			if (g_bEnableTextureLog && g_textureLog.good())
 			{
-				g_textureLog << "[SetTexture] drawCall=" << g_drawCallID << " stage=0"
+				g_textureLog << "[SetTexture] drawCall=" << g_drawCallID
+					<< " stage=0"
 					<< " ptr=" << pTexture
-					<< " hash=0x" << std::hex << texHash << std::dec << " ...";
+					<< " hash=0x" << std::hex << texHash << std::dec;
 
-
-				// Si width/height/format non remplis (hash récupéré du cache), on peut
-				// relire le desc ici pour le log uniquement.
-				// (If width/height/format are empty because we used the cache, fill for logging.)
+				// Compléter width/height/format si on ne les a pas encore
 				if ((width == 0 || height == 0) && tex2D)
 				{
 					D3DSURFACE_DESC desc{};
@@ -619,20 +604,15 @@ HRESULT IDirect3DDevice9Proxy::SetTexture(DWORD Stage, IDirect3DBaseTexture9* pT
 
 				if (format != D3DFMT_UNKNOWN)
 					g_textureLog << " fmt=" << static_cast<int>(format);
-			
+
 				g_textureLog << "\n";
 			}
 
-			// c) Export JPG optionnel : une seule fois par pointeur texture
-			//    (Optional JPG export: once per texture pointer)
+			// c) Export JPG uniquement si activé
 			if (g_bEnableJpgExport && tex2D)
 			{
-				// Insert renvoie true si l'élément n'existait pas
-				// (Insert returns true if this pointer was not seen before)
-				if (g_loggedTextures.insert(pTexture).second)
+				if (g_loggedTextures.insert(pTexture).second) // évite les doublons
 				{
-					// S'assurer que le dossier existe
-					// (Make sure target directory exists)
 					CreateDirectoryA("C:\\D3D9Proxy\\jpg", nullptr);
 
 					char name[128]{};
@@ -641,8 +621,6 @@ HRESULT IDirect3DDevice9Proxy::SetTexture(DWORD Stage, IDirect3DBaseTexture9* pT
 					else
 						sprintf_s(name, "tex_ptr_%p", pTexture);
 
-					// Appel à l'utilitaire d'export JPG
-					// (Call utility to export as JPG)
 					ExportTextureAsJPG(tex2D, name);
 				}
 			}
@@ -650,20 +628,16 @@ HRESULT IDirect3DDevice9Proxy::SetTexture(DWORD Stage, IDirect3DBaseTexture9* pT
 	}
 	else
 	{
-		// pTexture nul ou non-2D : si Stage==0, on peut remettre un hash neutre
-		// (Null or non-2D texture: if Stage 0, reset last hash)
+		// Texture nulle ou non-2D
 		if (Stage == 0)
 			g_lastTextureHash = 0;
 
-		// Log léger pour suivi des clears/unbinds
-		// (Light log to observe clears/unbinds)
 		if (g_bEnableTextureLog && g_textureLog.good())
 		{
 			g_textureLog << "[SetTexture] stage=" << Stage << " ptr=null-or-non2D\n";
 		}
 	}
 
-	// Appel direct à la fonction d'origine — (Forward to the original D3D9)
 	return origIDirect3DDevice9->SetTexture(Stage, pTexture);
 }
 
@@ -818,103 +792,113 @@ HRESULT IDirect3DDevice9Proxy::DrawIndexedPrimitive(
 	UINT StartIndex,
 	UINT PrimCount)
 {
-	++g_drawCallID; // identifiant global partagé entre tous les hooks
+	// --- Détection végétation ---
+	const bool isVegetation = (g_lastTextureHash != 0) &&
+		(knownVegetationHashes.count(g_lastTextureHash) != 0);
 
-	// See texturehash.cpp for details on hash-based vegetation detection.
-// (This is a temporary dev-stage solution; see notes there for future plan.)
-
-	bool isVegetation = (g_detectedVegetationHashes.find(g_lastTextureHash) != g_detectedVegetationHashes.end());
-
-	if (isVegetation && g_vegetationEffect)
+	if (!isVegetation || !g_vegetationEffect)
 	{
-		HRESULT result = D3D_OK;
-		IDirect3DStateBlock9* pStateBlock = nullptr;
-
-
-
-		if (SUCCEEDED(origIDirect3DDevice9->CreateStateBlock(D3DSBT_ALL, &pStateBlock)))
-		{
-			pStateBlock->Capture();
-
-			// 1. Cherche la bonne texture végétation par hash
-			// 1. Look up the corresponding vegetation texture using its hashed ID
-			auto it = g_vegetationTexturesByHash.find(g_lastTextureHash);
-			IDirect3DTexture9* wantedTex = (it != g_vegetationTexturesByHash.end()) ? it->second : nullptr;
-
-			// 2. Récupère la texture courante bindée sur slot 0
-			// 2. Retrieve the currently bound texture from texture stage 0
-			IDirect3DBaseTexture9* currentTex = nullptr;
-			origIDirect3DDevice9->GetTexture(0, &currentTex);
-
-			// 3. Si c’est pas la bonne, on la bind explicitement
-			// 3. If the bound texture differs from the expected one, override it manually
-			if (wantedTex && currentTex != static_cast<IDirect3DBaseTexture9*>(wantedTex))
-
-				origIDirect3DDevice9->SetTexture(0, wantedTex);
-
-			// 4. Passe la texture (celle qui est bindée, donc wantedTex ou currentTex) à l’effet
-			// 4. Set the bound texture (either wantedTex or currentTex) as input for the shader
-			IDirect3DBaseTexture9* shaderTex = wantedTex ? wantedTex : currentTex;
-		
-
-			if (shaderTex)
-				g_vegetationEffect->SetTexture(g_baseTextureHandle, shaderTex);
-
-			// 5. Animation
-			// 5. Update animation time parameter (based on system clock)
-			float timeSeconds = static_cast<float>(GetTickCount64() % 100000) / 1000.0f;
-			g_vegetationEffect->SetFloat(g_timeHandle, timeSeconds);
-
-			// 6. Matrices
-			// 6. Compute and pass the World-View-Projection matrix to the shader
-			D3DXMATRIX world, view, proj, wvp;
-			origIDirect3DDevice9->GetTransform(D3DTS_WORLD, &world);
-			origIDirect3DDevice9->GetTransform(D3DTS_VIEW, &view);
-			origIDirect3DDevice9->GetTransform(D3DTS_PROJECTION, &proj);
-			wvp = world * view * proj;
-			g_vegetationEffect->SetMatrix("WorldViewProjection", &wvp);
-
-			// --- Forcer les TextureStageStates pour le slot 0 (Fixed Pipeline) ---
-			// --- Ensure fixed-function texture stage states are correctly set for modulation ---)
-			origIDirect3DDevice9->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
-			origIDirect3DDevice9->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
-			origIDirect3DDevice9->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_DIFFUSE);
-
-			origIDirect3DDevice9->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_MODULATE);
-			origIDirect3DDevice9->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
-			origIDirect3DDevice9->SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE);
-
-
-			g_vegetationEffect->Begin(nullptr, 0);
-			g_vegetationEffect->BeginPass(0);
-
-			result = origIDirect3DDevice9->DrawIndexedPrimitive(
-				PrimitiveType, BaseVertexIndex, MinVertexIndex,
-				NumVertices, StartIndex, PrimCount);
-
-			g_vegetationEffect->EndPass();
-			g_vegetationEffect->End();
-
-			pStateBlock->Apply();
-			pStateBlock->Release();
-
-			if (currentTex) currentTex->Release();
-
-			return result;
-		}
-		// Fallback si erreur
-		// Fallback: perform draw call without effect if state block creation fails
 		return origIDirect3DDevice9->DrawIndexedPrimitive(
-			PrimitiveType, BaseVertexIndex, MinVertexIndex,
-			NumVertices, StartIndex, PrimCount);
+			PrimitiveType, BaseVertexIndex, MinVertexIndex, NumVertices, StartIndex, PrimCount);
 	}
 
-	// Cas normal
-	// Default case: forward the call without any vegetation-specific processing
-	return origIDirect3DDevice9->DrawIndexedPrimitive(
-		PrimitiveType, BaseVertexIndex, MinVertexIndex,
-		NumVertices, StartIndex, PrimCount);
+	OutputDebugStringA("[VEGETATION] DIP: vegetation draw detected\n");
+
+	// --- Sauvegarde état ---
+	IDirect3DStateBlock9* pSB = nullptr;
+	if (FAILED(origIDirect3DDevice9->CreateStateBlock(D3DSBT_ALL, &pSB)) || !pSB)
+	{
+		return origIDirect3DDevice9->DrawIndexedPrimitive(
+			PrimitiveType, BaseVertexIndex, MinVertexIndex, NumVertices, StartIndex, PrimCount);
+	}
+	pSB->Capture();
+
+	// --- Handles statiques ---
+	static D3DXHANDLE s_hTech = nullptr;
+	static D3DXHANDLE s_hTime = nullptr;
+	static D3DXHANDLE s_hWVP = nullptr;
+	static D3DXHANDLE s_hBase = nullptr;
+
+	if (!s_hTech) s_hTech = g_vegetationEffect->GetTechniqueByName("Vegetation");
+	if (!s_hTime) s_hTime = g_timeHandle ? g_timeHandle
+		: g_vegetationEffect->GetParameterByName(nullptr, "Time");
+	if (!s_hWVP)  s_hWVP = g_vegetationEffect->GetParameterByName(nullptr, "WorldViewProjection");
+
+	if (!s_hBase)
+	{
+		if (g_baseTextureHandle) s_hBase = g_baseTextureHandle;
+		else {
+			// Ajout explicite du nom utilisé dans vegetation.fx
+			s_hBase = g_vegetationEffect->GetParameterByName(nullptr, "BaseTexture");
+			if (!s_hBase) s_hBase = g_vegetationEffect->GetParameterByName(nullptr, "BaseTex");
+			if (!s_hBase) s_hBase = g_vegetationEffect->GetParameterByName(nullptr, "baseTex");
+			if (!s_hBase) s_hBase = g_vegetationEffect->GetParameterByName(nullptr, "diffuseTex");
+			if (!s_hBase) s_hBase = g_vegetationEffect->GetParameterByName(nullptr, "texture0");
+		}
+	}
+
+	if (s_hTech) g_vegetationEffect->SetTechnique(s_hTech);
+
+	// --- Rebinding complet ---
+	//attention dans les log le FVF des sprites	est souvent 0x112, mais aucun shader ne fonctionne avec cette racine : POSITION + COLOR0 + TEXCOORD0. en réalité seuls les shaders correspondant a un fvf 0x252 fonctionnent partiellement. A creuser 	
+	// (a) Texture slot 0  BaseTexture
+	{
+		IDirect3DBaseTexture9* tex0 = nullptr;
+		if (SUCCEEDED(origIDirect3DDevice9->GetTexture(0, &tex0)) && tex0)
+		{
+			if (s_hBase) g_vegetationEffect->SetTexture(s_hBase, tex0);
+			tex0->Release();
+		}
+	}
+
+	// (b) Constantes
+	if (s_hTime)
+	{
+		const float t = static_cast<float>(GetTickCount64() % 100000) / 1000.0f;
+		g_vegetationEffect->SetFloat(s_hTime, t);
+	}
+	if (s_hWVP)
+	{
+		D3DXMATRIX W, V, P, WVP;
+		origIDirect3DDevice9->GetTransform(D3DTS_WORLD, &W);
+		origIDirect3DDevice9->GetTransform(D3DTS_VIEW, &V);
+		origIDirect3DDevice9->GetTransform(D3DTS_PROJECTION, &P);
+		WVP = W * V * P;
+		g_vegetationEffect->SetMatrix(s_hWVP, &WVP);
+	}
+
+	// (c) États minimaux
+	origIDirect3DDevice9->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
+	origIDirect3DDevice9->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
+	origIDirect3DDevice9->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
+
+	// --- Dessin avec l’effet ---
+	UINT nPasses = 0;
+	if (SUCCEEDED(g_vegetationEffect->Begin(&nPasses, 0)))
+	{
+		for (UINT p = 0; p < nPasses; ++p)
+		{
+			g_vegetationEffect->BeginPass(p);
+
+			// Forcer l’alpha si besoin (COLOR0.a = 1.0)
+			origIDirect3DDevice9->SetRenderState(D3DRS_DIFFUSEMATERIALSOURCE, D3DMCS_COLOR1);
+			origIDirect3DDevice9->SetRenderState(D3DRS_COLORVERTEX, TRUE);
+
+			origIDirect3DDevice9->DrawIndexedPrimitive(
+				PrimitiveType, BaseVertexIndex, MinVertexIndex, NumVertices, StartIndex, PrimCount);
+
+			g_vegetationEffect->EndPass();
+		}
+		g_vegetationEffect->End();
+	}
+
+	// --- Restauration état ---
+	pSB->Apply();
+	pSB->Release();
+
+	return D3D_OK;
 }
+
 
 
 
